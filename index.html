@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task List App</title>
+  <link rel="stylesheet" href="index.css" />
+</head>
+<body>
+  <main>
+    <h1>To-Do List</h1>
+    <div class="container">
+      
+
+      <!-- Filters Section -->
+      <div class="filters">
+        <div class="menu-icon" onclick="toggleFilters()">☰</div>
+        <div class="filter-options" id="filter-options">
+          <button onclick="renderTasks('all')">All</button>
+          <button onclick="renderTasks('completed')">Completed</button>
+          <button onclick="renderTasks('pending')">Pending</button>
+        </div>
+      </div>
+
+      <!-- Task List -->
+      <div class="task-list" id="task-list">
+        <!-- Tasks will be dynamically added here -->
+      </div>
+
+      <!-- Success and Failure Rate Section -->
+      <div class="stats">
+        <h2>Task Statistics</h2>
+        <p id="success-rate">Success Rate: 0%</p>
+        <p id="failure-rate">Failure Rate: 0%</p>
+      </div>
+
+      <!-- Add Task Button -->
+      <button class="add-task-btn" onclick="openTaskForm()">+</button>
+
+      <!-- Task Form Overlay -->
+      <div class="overlay" id="overlay">
+        <div class="task-form">
+          <span class="close-btn" onclick="closeTaskForm()">×</span>
+          <h2>Add Task</h2>
+          <input type="text" id="task-input" placeholder="Enter your task" />
+          <button onclick="addTask()">Add</button>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="index.js"></script>
+</body>
+</html>
