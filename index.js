@@ -21,7 +21,7 @@ function renderTasks(filter = 'all') {
         <span>${task.text}</span>
         <div>
           <input type="checkbox" ${task.completed ? 'checked' : ''} onchange="toggleComplete(${task.originalIndex})">
-          <button class="edit-btn" onclick="updateTask()">🖊</button> 
+          <button class="edit-btn" onclick="openEditForm(${task.originalIndex})">🖊</button> 
           <button onclick="deleteTask(${task.originalIndex})">Delete</button>
         </div>
       `;
@@ -29,9 +29,52 @@ function renderTasks(filter = 'all') {
     });
     updateStats();
   }
-  
 
-  function updateStats() {
+
+// Edit Task using this function
+function openEditForm(index) {
+  currentTaskIndex = index; // Set the current task index
+  const taskInput = document.getElementById('task-input');
+  taskInput.value = tasks[index].text; // Pre-fill the form with the current task text
+  openTaskForm('edit'); // Open the form in "edit" mode
+}
+
+// Open the form for adding a new task
+function openAddForm() {
+  currentTaskIndex = null; // Reset the current task index
+  const taskInput = document.getElementById('task-input');
+  taskInput.value = ''; // Clear the input field
+  openTaskForm('add'); // Open the form in "add" mode
+}
+
+// Open the form (general function)
+function openTaskForm(mode = 'add') {
+  document.addEventListener('DOMContentLoaded', () => {
+    const overlay = document.getElementById('overlay');
+    const formTitle = document.getElementById('form-title');
+    const submitButton = document.getElementById('submit-button');
+    
+    if (!formTitle || !submitButton) {
+      console.error("Form elements not found!");
+      return;
+    }
+
+    if (mode === 'edit') {
+      formTitle.textContent = 'Edit Task';
+      submitButton.textContent = 'Save Changes';
+      submitButton.setAttribute('onclick', 'addTask()');
+    } else {
+      formTitle.textContent = 'Add New Task';
+      submitButton.textContent = 'Add Task';
+      submitButton.setAttribute('onclick', 'addTask()');
+    }
+
+    overlay.style.display = 'block';
+  });
+}
+
+
+function updateStats() {
     const totalTasks = tasks.length;
     const completedTasks = tasks.filter(task => task.completed).length;
     const pendingTasks = totalTasks - completedTasks;
@@ -47,12 +90,19 @@ function renderTasks(filter = 'all') {
 function addTask() {
   const taskInput = document.getElementById('task-input');
   const text = taskInput.value.trim();
+
   if (text) {
-    tasks.push({ text, completed: false });
-    taskInput.value = '';
-    saveTasks();
-    renderTasks();
-    closeTaskForm();
+      if (currentTaskIndex !== null) {
+          // Update the existing task
+          tasks[currentTaskIndex].text = text;
+          currentTaskIndex = null;
+      } else {
+          // Add a new task
+          tasks.push({ text, completed: false });
+      }
+      saveTasks();
+      renderTasks();
+      closeTaskForm();
   }
 }
 
