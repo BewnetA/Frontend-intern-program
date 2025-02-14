@@ -25,9 +25,10 @@ function renderTasks(filter = "all") {
         <p>Deadline: ${task.date}</p>
         </div>
         <div>
-          <input type="checkbox" ${
+        <label>Done
+          <input name="complete-task" type="checkbox" ${
             task.completed ? "checked" : ""
-          } onchange="toggleComplete(${task.originalIndex})">
+          } onchange="toggleComplete(${task.originalIndex})"></label>
           <button class="edit-btn" onclick="openEditForm(${
             task.originalIndex
           })">🖊</button> 
@@ -43,6 +44,10 @@ function renderTasks(filter = "all") {
 function openEditForm(index) {
   currentTaskIndex = index; // Set the current task index
   const taskInput = document.getElementById("task-input");
+  const dateInput = document.getElementById("task-date");
+  const priorityInput = document.getElementById("task-priority");
+  dateInput.value = tasks[index].date
+  priorityInput.value = tasks[index].priority; // Pre-fill the form with the current task priority
   taskInput.value = tasks[index].text; // Pre-fill the form with the current task text
   console.log("In the openEditForm method");
   openTaskForm("edit"); // Open the form in "edit" mode
@@ -52,6 +57,10 @@ function openEditForm(index) {
 function openAddForm() {
   currentTaskIndex = null; // Reset the current task index
   const taskInput = document.getElementById("task-input");
+  const dateInput = document.getElementById("task-date");
+  const priorityInput = document.getElementById("task-priority");
+  dateInput.value = null;
+  priorityInput.value = null; // Clear the form values
   taskInput.value = ""; // Clear the input field
   console.log("In the openAddForm method");
 
@@ -137,14 +146,16 @@ function addTask() {
   const date = taskDate.value;
   const priority = taskPriority.value;
 
-  if (text) {
+  if (text && priority && date) {
     if (currentTaskIndex !== null) {
       tasks[currentTaskIndex].text = text;
       tasks[currentTaskIndex].date = date;
       tasks[currentTaskIndex].priority = priority;
       currentTaskIndex = null;
+      showNotification("✅ Task edited successfully", "success")
     } else {
       tasks.push({ text, date, priority, completed: false });
+      showNotification("✅ Task added successfully", "success")
     }
 
     tasks.sort((a, b) => {
@@ -158,7 +169,9 @@ function addTask() {
     saveTasks();
     renderTasks();
     closeTaskForm();
+    return
   }
+  showNotification("Please fill in all fields ❌", "error");
 }
 
 // Toggle Complete
@@ -196,11 +209,24 @@ function filterTasks(filter) {
 }
 
 // Toggle Filters Menu (Mobile)
+// Toggle Filters Menu (Mobile)
 function toggleFilters() {
   const filterOptions = document.getElementById("filter-options");
   filterOptions.classList.toggle("show");
 }
 
+
+function showNotification(message, type) {
+  const notificationBox = document.getElementById("message");
+  notificationBox.textContent = message;
+  notificationBox.className = `notification ${type}`;
+  notificationBox.style.display = "block";
+
+  // Hide the notification after 3 seconds
+  setTimeout(() => {
+    notificationBox.style.display = "none";
+  }, 3000);
+}
 // Initial Render
 renderTasks();
 
@@ -208,5 +234,21 @@ renderTasks();
 document.getElementById("overlay").addEventListener("click", (e) => {
   if (e.target === document.getElementById("overlay")) {
     closeTaskForm();
+  }
+});
+
+// Close Filters When Clicking Outside the filters
+document.addEventListener("click", (event) => {
+  const filters = document.querySelector(".filters");
+  const menuIcon = document.querySelector(".menu-icon");
+  const filterOptions = document.getElementById("filter-options");
+
+  // Check if the click is outside the filters and menu icon
+  if (
+    !filters.contains(event.target) ||
+    !menuIcon.contains(event.target) &&
+    filterOptions.classList.contains("show")
+  ) {
+    filterOptions.classList.remove("show");
   }
 });

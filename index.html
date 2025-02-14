@@ -10,19 +10,18 @@
 <body>
   <main>
     <h1>To-Do List</h1>
+    <div id="message"></div>
     <div class="container">
       <!-- Filters Section -->
       <div class="filters">
         <div class="menu-icon" onclick="toggleFilters()">☰</div>
         <div class="filter-options" id="filter-options">
+          <h1>Filters</h1>
           <button onclick="renderTasks('all')">All</button>
           <button onclick="renderTasks('completed')">Completed</button>
           <button onclick="renderTasks('pending')">Pending</button>
         </div>
       </div>
-
-      <!-- Animation container -->
-      <div id="confetti-container"></div>
       <!-- Task List -->
       <div class="task-list" id="task-list">
         <!-- Tasks will be dynamically added here -->
