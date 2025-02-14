@@ -5,13 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Task List App</title>
   <link rel="stylesheet" href="index.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <main>
     <h1>To-Do List</h1>
     <div class="container">
-      
-
       <!-- Filters Section -->
       <div class="filters">
         <div class="menu-icon" onclick="toggleFilters()">☰</div>
@@ -22,6 +21,8 @@
         </div>
       </div>
 
+      <!-- Animation container -->
+      <div id="confetti-container"></div>
       <!-- Task List -->
       <div class="task-list" id="task-list">
         <!-- Tasks will be dynamically added here -->
@@ -30,20 +31,39 @@
       <!-- Success and Failure Rate Section -->
       <div class="stats">
         <h2>Task Statistics</h2>
-        <p id="success-rate">Success Rate: 0%</p>
-        <p id="failure-rate">Failure Rate: 0%</p>
+        <div class="progress-bar">
+          <div class="progress" id="progress"></div>
+        </div>
+        <p id="completion-rate">Completion Rate: 0%</p>
+        <canvas id="task-chart" width="200" height="200"></canvas>
+
+
       </div>
 
       <!-- Add Task Button -->
       <button class="add-task-btn" onclick="openAddForm()">+</button>
 
-      <!-- Task Form Overlay -->
+      <!-- Task Form Overlay on the home page-->
       <div class="overlay" id="overlay">
         <div class="task-form">
           <span class="close-btn" onclick="closeTaskForm()">×</span>
           <h2 id="form-title">Add New Task</h2>
+          <label>
+            Task Title:
           <input type="text" id="task-input" placeholder="Enter your task" />
-          <button id="submit-button">Add</button>
+          </label>
+          <label>
+            Deadline:
+          <input type="date" id="task-date" />
+          </label>
+          <label>
+            Priority Level:
+          <select id="task-priority">
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select></label>
+          <button id="submit-button" onclick="addTask()">Add</button>
         </div>
       </div>
     </div>
