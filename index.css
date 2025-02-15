@@ -91,6 +91,8 @@ h1 {
 }
 
 .task-list .title span {
+  position: relative;
+  top: -9px;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 1.5em;
 }
@@ -144,14 +146,33 @@ For High priority tasks
   gap: 10px;
 }
 
+/* Custom Circular Checkbox */
 .task input[type="checkbox"] {
+  appearance: none;
   width: 30px;
   height: 30px;
-  position: relative;
-  top: 9px;
-  left: 0px;
+  border: 2px solid #007bff;
+  border-radius: 50%; 
   cursor: pointer;
-  accent-color: #16dd62;
+  position: relative;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Checked state */
+.task input[type="checkbox"]:checked {
+  background-color: #16dd62;
+  border-color: #16dd62; 
+}
+
+/* Checkmark inside the circle */
+.task input[type="checkbox"]:checked::before {
+  content: "✔";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.5em;
+  color: white;
 }
 
 .task button {

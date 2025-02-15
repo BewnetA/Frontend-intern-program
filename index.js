@@ -31,8 +31,8 @@ function renderTasks(filter = "all") {
           <p class="task-deadline">📅 ${task.date}</p>
         </div>
         <div class="task-actions">
-          <button class="edit-btn" onclick="openEditForm(${task.originalIndex})">✏️ Edit</button>
-          <button class="delete-btn" onclick="deleteTask(${task.originalIndex})">🗑️ Delete</button>
+          <button class="edit-btn" onclick="openEditForm(${task.originalIndex})">✏️</button>
+          <button class="delete-btn" onclick="deleteTask(${task.originalIndex})">🗑️</button>
         </div>
       `;
       taskList.appendChild(taskElement);
