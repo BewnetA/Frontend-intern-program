@@ -10,6 +10,7 @@ body {
 :root {
   --primary-color: #16213E ;
   --secondary-color: #0F3460 ;
+  --tertiary-color: #03203f;
   --background-color: #1A1A2E;
   --accent-color: #E94560 ;
   --pending-border-color: #007bff;
@@ -27,6 +28,7 @@ main {
   margin: 0 auto;
   padding: 20px;
   display: flex;
+  flex-wrap: wrap;
   gap: 20px;
 }
 
@@ -101,7 +103,7 @@ h1 {
   background: var(--secondary-color);
   color: var(--text-color);
   border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   border-left: 10px solid var(--pending-border-color);
 }
@@ -117,15 +119,15 @@ h1 {
   border-left-color: var(--completed-border-color);
 }
  
-/* For Medium priority tasks */
+/* For Medium priority tasks
 .task.medium{
   border-left:10px solid #f7e376;
 }
 
-/* For High priority tasks */
+For High priority tasks 
 .task.high{
   border-left:10px solid #dc3545;
-}
+} */
 
 .task.deadline {
   color: #f70505;
@@ -145,6 +147,9 @@ h1 {
 .task input[type="checkbox"] {
   width: 30px;
   height: 30px;
+  position: relative;
+  top: 9px;
+  left: 0px;
   cursor: pointer;
   accent-color: #16dd62;
 }
@@ -174,6 +179,24 @@ h1 {
 
 .task button.edit-btn:hover {
   background-color: #a0b9d1;
+}
+
+/* Priority Text Styling */
+.task-priority {
+  font-size: 0.85em;
+  margin-top: 10px;
+}
+
+.task-priority.high {
+  color: #dc3545;
+}
+
+.task-priority.medium {
+  color: #ffc107;
+}
+
+.task-priority.low {
+  color: #28a745;
 }
 
 .add-task-btn {
@@ -240,10 +263,10 @@ h1 {
 }
 
 .close-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 24px;
+  position: relative;
+  top: -5px;
+  right: -195px;
+  font-size: 1.8em;
   cursor: pointer;
   color: #333;
   transition: color 0.3s ease;
@@ -280,29 +303,30 @@ h1 {
   }
 
   .filters {
-    width: fit-content;
-    margin-bottom: 20px;
-    background-color: var(--primary-color);
-    color: var(--text-color);
-    font-size: 1.5em;
+    margin: 0px;
+    padding: 0px;
   }
 
   .menu-icon {
     display: block;
+    position: absolute;
+    top: 20px;
+    color: var(--text-color);
+    font-size: 1.5em;
     width: fit-content;
   }
 
   .filter-options {
     display: none;
     position: absolute;
-    top: 170px;
+    top: 60px;
     left: 30%;
     transform: translateX(-50%);
     z-index: 1;
     width: 250px;
     border-radius: 5px;
     flex-direction: column;
-    background-color: var(--secondary-color);
+    background-color: var(--tertiary-color);
     padding: 10px;
     border-radius: 5px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);

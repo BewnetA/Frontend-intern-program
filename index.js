@@ -1,7 +1,8 @@
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-let currentTaskIndex = null;
-// Render Tasks
-// Render Tasks
+let currentTaskIndex = null; // Used by addTask() to determine whether a new task is being created or an existing task is being edited.
+// If currentTaskIndex is null, a new task is added to the task list.
+
+// Task loader on the page
 function renderTasks(filter = "all") {
   const taskList = document.getElementById("task-list");
   taskList.innerHTML = "";
@@ -14,29 +15,28 @@ function renderTasks(filter = "all") {
       return true; // 'all'
     });
 
-  filteredTasks.forEach((task) => {
-    const taskElement = document.createElement("div");
-    taskElement.className = `task ${
-      task.completed ? "completed" : task.priority
-    }`;
-    taskElement.innerHTML = `
-      <div class="title"> 
-        <span>${task.text}</span>
-        <p>Deadline: ${task.date}</p>
+    filteredTasks.forEach((task) => {
+      const taskElement = document.createElement("div");
+      taskElement.className = `task ${task.completed ? "completed" : task.priority}`;
+      taskElement.innerHTML = `
+        <div class="title">
+          <label>
+            <input name="complete-task" type="checkbox" ${
+              task.completed ? "checked" : ""
+            } onchange="toggleComplete(${task.originalIndex})">
+            <span class="checkmark"></span>
+          </label>
+          <span class="task-title">${task.text}</span>
+          <p class="task-priority ${task.priority}">Priority: ${task.priority}</p>
+          <p class="task-deadline">📅 ${task.date}</p>
         </div>
-        <div>
-        <label>Done
-          <input name="complete-task" type="checkbox" ${
-            task.completed ? "checked" : ""
-          } onchange="toggleComplete(${task.originalIndex})"></label>
-          <button class="edit-btn" onclick="openEditForm(${
-            task.originalIndex
-          })">🖊</button> 
-          <button onclick="deleteTask(${task.originalIndex})">Delete</button>
+        <div class="task-actions">
+          <button class="edit-btn" onclick="openEditForm(${task.originalIndex})">✏️ Edit</button>
+          <button class="delete-btn" onclick="deleteTask(${task.originalIndex})">🗑️ Delete</button>
         </div>
       `;
-    taskList.appendChild(taskElement);
-  });
+      taskList.appendChild(taskElement);
+    });
   updateStats();
 }
 
@@ -47,10 +47,17 @@ function openEditForm(index) {
   const dateInput = document.getElementById("task-date");
   const priorityInput = document.getElementById("task-priority");
   dateInput.value = tasks[index].date
-  priorityInput.value = tasks[index].priority; // Pre-fill the form with the current task priority
-  taskInput.value = tasks[index].text; // Pre-fill the form with the current task text
-  console.log("In the openEditForm method");
-  openTaskForm("edit"); // Open the form in "edit" mode
+  priorityInput.value = tasks[index].priority;
+  taskInput.value = tasks[index].text;
+  const overlay = document.getElementById("overlay");
+  const formTitle = document.getElementById("form-title");
+  const submitButton = document.getElementById("submit-button");
+
+  formTitle.textContent = "Edit Task";
+  submitButton.textContent = "Save Changes";
+  submitButton.setAttribute("onclick", "addTask()");
+
+  overlay.style.display = "flex";
 }
 
 // Open the form for adding a new task
@@ -59,43 +66,18 @@ function openAddForm() {
   const taskInput = document.getElementById("task-input");
   const dateInput = document.getElementById("task-date");
   const priorityInput = document.getElementById("task-priority");
-  dateInput.value = null;
-  priorityInput.value = null; // Clear the form values
-  taskInput.value = ""; // Clear the input field
-  console.log("In the openAddForm method");
-
-  openTaskForm(); // Open the form in "add" mode
-  console.log("In the openAddForm method after calling openTaskForm");
-}
-
-// Open the form (general function)
-function openTaskForm(mode = "add") {
-  console.log("Entering openTaskForm");
   const overlay = document.getElementById("overlay");
   const formTitle = document.getElementById("form-title");
   const submitButton = document.getElementById("submit-button");
-  console.log("In the openTaskForm method");
+  dateInput.value = null;
+  priorityInput.value = null; // Clear the form values
+  taskInput.value = ""; // Clear the input field
 
-  if (!formTitle || !submitButton) {
-    console.error("Form elements not found!");
-    return;
-  }
+  formTitle.textContent = 'Add New Task';
+  submitButton.textContent = 'Add Task';
+  submitButton.setAttribute('onclick', 'addTask()');
 
-  if (mode === "edit") {
-    formTitle.textContent = "Edit Task";
-    submitButton.textContent = "Save Changes";
-    submitButton.setAttribute("onclick", "addTask()");
-    console.log("In the openTaskForm method inside if statement");
-  } // else {
-  //   formTitle.textContent = 'Add New Task';
-  //   submitButton.textContent = 'Add Task';
-  //   submitButton.setAttribute('onclick', 'addTask()');
-  //   console.log("In the openTaskForm method inside else statement");
-
-  // }
-
-  overlay.style.display = "block";
-  console.log("In the openTaskForm method final line");
+  overlay.style.display = "flex";
 }
 
 // Update Stats Function
@@ -213,6 +195,7 @@ function filterTasks(filter) {
 function toggleFilters() {
   const filterOptions = document.getElementById("filter-options");
   filterOptions.classList.toggle("show");
+  console.log("Filters toggled"); // Debugging
 }
 
 
