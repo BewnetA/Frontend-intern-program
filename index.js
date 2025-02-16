@@ -7,6 +7,8 @@ function renderTasks(filter = "all") {
   const taskList = document.getElementById("task-list");
   taskList.innerHTML = "";
 
+  checkUpcomingTasks();
+
   const filteredTasks = tasks
     .map((task, index) => ({ ...task, originalIndex: index })) // Store original index
     .filter((task) => {
@@ -15,10 +17,12 @@ function renderTasks(filter = "all") {
       return true; // 'all'
     });
 
-    filteredTasks.forEach((task) => {
-      const taskElement = document.createElement("div");
-      taskElement.className = `task ${task.completed ? "completed" : task.priority}`;
-      taskElement.innerHTML = `
+  filteredTasks.forEach((task) => {
+    const taskElement = document.createElement("div");
+    taskElement.className = `task ${
+      task.completed ? "completed" : task.priority
+    }`;
+    taskElement.innerHTML = `
         <div class="title">
           <label>
             <input name="complete-task" type="checkbox" ${
@@ -27,17 +31,48 @@ function renderTasks(filter = "all") {
             <span class="checkmark"></span>
           </label>
           <span class="task-title">${task.text}</span>
-          <p class="task-priority ${task.priority}">Priority: ${task.priority}</p>
+          <p class="task-priority ${task.priority}"><strong>Priority: ${
+      task.priority
+    }</strong></p>
           <p class="task-deadline">📅 ${task.date}</p>
         </div>
         <div class="task-actions">
-          <button class="edit-btn" onclick="openEditForm(${task.originalIndex})">✏️</button>
-          <button class="delete-btn" onclick="deleteTask(${task.originalIndex})">🗑️</button>
+          <button class="edit-btn" onclick="openEditForm(${
+            task.originalIndex
+          })" title="Edit"><ion-icon name="pencil-sharp"></ion-icon></button>
+          <button class="delete-btn" onclick="deleteTask(${
+            task.originalIndex
+          })" title="Remove"><ion-icon name="trash-sharp"></ion-icon></button>
         </div>
       `;
-      taskList.appendChild(taskElement);
-    });
+    taskList.appendChild(taskElement);
+  });
   updateStats();
+}
+
+// The below function filters the upcoming tasks
+function checkUpcomingTasks() {
+  const now = new Date();
+  const tomorrow = new Date(now);
+  tomorrow.setDate(now.getDate() + 1);
+  const upcomingTasks = tasks.filter((task) => {
+    const taskDate = new Date(task.date);
+    return (
+      taskDate.toDateString() === tomorrow.toDateString() && !task.completed
+    );
+  });
+
+  const upcomingTasksList = document.getElementById("upcoming-task-list");
+  upcomingTasksList.innerHTML = "";
+
+  upcomingTasks.forEach((task) => {
+    const taskElement = document.createElement("div");
+    taskElement.className = "upcoming-task";
+    taskElement.textContent = task.text;
+
+    upcomingTasksList.appendChild(taskElement);
+    document.querySelector(".upcoming-tasks").style.display = "block";
+  });
 }
 
 // Edit Task using this function
@@ -46,7 +81,7 @@ function openEditForm(index) {
   const taskInput = document.getElementById("task-input");
   const dateInput = document.getElementById("task-date");
   const priorityInput = document.getElementById("task-priority");
-  dateInput.value = tasks[index].date
+  dateInput.value = tasks[index].date;
   priorityInput.value = tasks[index].priority;
   taskInput.value = tasks[index].text;
   const overlay = document.getElementById("overlay");
@@ -73,9 +108,9 @@ function openAddForm() {
   priorityInput.value = null; // Clear the form values
   taskInput.value = ""; // Clear the input field
 
-  formTitle.textContent = 'Add New Task';
-  submitButton.textContent = 'Add Task';
-  submitButton.setAttribute('onclick', 'addTask()');
+  formTitle.textContent = "Add New Task";
+  submitButton.textContent = "Add Task";
+  submitButton.setAttribute("onclick", "addTask()");
 
   overlay.style.display = "flex";
 }
@@ -119,7 +154,7 @@ function updateStats() {
   });
 }
 
-// Add Task
+// Add new Task or edit the existing
 function addTask() {
   const taskInput = document.getElementById("task-input");
   const taskDate = document.getElementById("task-date");
@@ -129,15 +164,16 @@ function addTask() {
   const priority = taskPriority.value;
 
   if (text && priority && date) {
+
     if (currentTaskIndex !== null) {
       tasks[currentTaskIndex].text = text;
       tasks[currentTaskIndex].date = date;
       tasks[currentTaskIndex].priority = priority;
       currentTaskIndex = null;
-      showNotification("✅ Task edited successfully", "success")
+      showNotification("✅ Task edited successfully", "success");
     } else {
       tasks.push({ text, date, priority, completed: false });
-      showNotification("✅ Task added successfully", "success")
+      showNotification("✅ Task added successfully", "success");
     }
 
     tasks.sort((a, b) => {
@@ -151,12 +187,12 @@ function addTask() {
     saveTasks();
     renderTasks();
     closeTaskForm();
-    return
+    return;
   }
   showNotification("Please fill in all fields ❌", "error");
 }
 
-// Toggle Complete
+// Toggle Complete 
 function toggleComplete(index) {
   tasks[index].completed = !tasks[index].completed;
   saveTasks();
@@ -165,9 +201,14 @@ function toggleComplete(index) {
 
 // Delete Task
 function deleteTask(index) {
-  tasks.splice(index, 1);
-  saveTasks();
-  renderTasks();
+  // Ask the user for confirmation
+  const isConfirmed = confirm("Are you sure you want to delete this task?");
+
+  if (isConfirmed) {
+    tasks.splice(index, 1); // Remove the task from the array
+    saveTasks();
+    renderTasks();
+  }
 }
 
 // Save Tasks to Local Storage
@@ -185,20 +226,13 @@ function closeTaskForm() {
   document.getElementById("overlay").style.display = "none";
 }
 
-// Filter Tasks
-function filterTasks(filter) {
-  renderTasks(filter);
-}
-
-// Toggle Filters Menu (Mobile)
-// Toggle Filters Menu (Mobile)
+// Toggle Filters Menu (Mobile/Smaller devices)
 function toggleFilters() {
   const filterOptions = document.getElementById("filter-options");
   filterOptions.classList.toggle("show");
-  console.log("Filters toggled"); // Debugging
 }
 
-
+// Show Success/ Error Notifications
 function showNotification(message, type) {
   const notificationBox = document.getElementById("message");
   notificationBox.textContent = message;
@@ -229,8 +263,8 @@ document.addEventListener("click", (event) => {
   // Check if the click is outside the filters and menu icon
   if (
     !filters.contains(event.target) ||
-    !menuIcon.contains(event.target) &&
-    filterOptions.classList.contains("show")
+    (!menuIcon.contains(event.target) &&
+      filterOptions.classList.contains("show"))
   ) {
     filterOptions.classList.remove("show");
   }
