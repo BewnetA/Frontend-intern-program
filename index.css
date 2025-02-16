@@ -447,7 +447,6 @@ h1 {
 }
 
 .upcoming-tasks {
-  display: none;
   margin-top: 50px;
 }
 
@@ -459,6 +458,13 @@ h1 {
   background-color: var(--teal);
   border: 1px solid #ddd;
   border-radius: 4px;
+}
+
+.no-tasks-message {
+  text-align: center;
+  color: #888;
+  font-style: italic;
+  margin: 10px 0;
 }
 
 

@@ -55,6 +55,8 @@ function checkUpcomingTasks() {
   const now = new Date();
   const tomorrow = new Date(now);
   tomorrow.setDate(now.getDate() + 1);
+
+  // Filter tasks that are due tomorrow and not completed
   const upcomingTasks = tasks.filter((task) => {
     const taskDate = new Date(task.date);
     return (
@@ -63,16 +65,29 @@ function checkUpcomingTasks() {
   });
 
   const upcomingTasksList = document.getElementById("upcoming-task-list");
-  upcomingTasksList.innerHTML = "";
+  upcomingTasksList.innerHTML = ""; // Clear the list before rendering
 
-  upcomingTasks.forEach((task) => {
-    const taskElement = document.createElement("div");
-    taskElement.className = "upcoming-task";
-    taskElement.textContent = task.text;
+  if (upcomingTasks.length > 0) {
+    // If there are upcoming tasks, display them
+    upcomingTasks.forEach((task) => {
+      const taskElement = document.createElement("div");
+      taskElement.className = "upcoming-task";
+      taskElement.textContent = task.text;
+      upcomingTasksList.appendChild(taskElement);
+    });
 
-    upcomingTasksList.appendChild(taskElement);
+    // Show the upcoming tasks section
     document.querySelector(".upcoming-tasks").style.display = "block";
-  });
+  } else {
+    // If there are no upcoming tasks, display a message
+    const noTasksMessage = document.createElement("p");
+    noTasksMessage.textContent = "No upcoming tasks for tomorrow.";
+    noTasksMessage.className = "no-tasks-message";
+    upcomingTasksList.appendChild(noTasksMessage);
+
+    // Show the upcoming tasks section (to display the message)
+    document.querySelector(".upcoming-tasks").style.display = "block";
+  }
 }
 
 // Edit Task using this function
