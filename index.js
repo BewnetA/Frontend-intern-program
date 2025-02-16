@@ -8,6 +8,16 @@ function renderTasks(filter = "all") {
   taskList.innerHTML = "";
 
   checkUpcomingTasks();
+  // If the tasks array is empty, display a "No Tasks" message and return
+  if (tasks.length === 0) {
+    const noTasksMessage = document.createElement("p");
+    noTasksMessage.textContent = "No tasks added yet.";
+    noTasksMessage.className = "no-tasks-message";
+    taskList.appendChild(noTasksMessage);
+    updateStats(); // Update statistics (e.g., progress bar, pie chart)
+    return; // Exit the function early
+  }
+
 
   const filteredTasks = tasks
     .map((task, index) => ({ ...task, originalIndex: index })) // Store original index
