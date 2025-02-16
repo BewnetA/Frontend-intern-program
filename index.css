@@ -120,17 +120,54 @@ h1 {
 .task.completed {
   color: #888;
   border-left-color: var(--completed-border-color);
-}
- 
-/* For Medium priority tasks
-.task.medium{
-  border-left:10px solid #f7e376;
+  position: relative;
+  transition: all 0.5s ease-in-out;
+  opacity: 0.7;
 }
 
-For High priority tasks 
-.task.high{
-  border-left:10px solid #dc3545;
-} */
+/* Fading and Strikethrough Effect */
+.task.completed::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.5);
+  animation: strikeThrough 0.4s ease-in-out forwards;
+}
+
+/* Scale and Glow Effect */
+@keyframes completeTask {
+  0% {
+    transform: scale(1);
+    box-shadow: none;
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: none;
+  }
+}
+
+/* Strikethrough Effect */
+@keyframes strikeThrough {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+/* Apply the scale effect when completed */
+.task.completed {
+  animation: completeTask 0.5s ease-in-out;
+}
+
 
 .task.deadline {
   color: #f70505;
